@@ -39,4 +39,5 @@ func callAPI(url string) (string, error) {
 		return "", err
 	}
 	return data.Message + "接続できた", nil
+
 }
