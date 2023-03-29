@@ -1,8 +1,10 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
 	"log"
+	"net"
 	"net/http"
 	"os"
 )
@@ -29,13 +31,19 @@ func main() {
 		log.Fatal(err)
 	}
 	apiURL := "https://go-codescanning-githubactions-cloudrun-wsgwmfbvhq-uc.a.run.app/"
-	response, err := http.Get(apiURL)
-
+	/*接続を試みる*/
+	conn, err := net.Dial("tcp", apiURL)
 	if err != nil {
-		fmt.Println("Error Request:", err)
-		return
+		fmt.Println("Error")
 	}
-	fmt.Println("接続できた", response)
+
+	/*GETリクエストを送信*/
+	fmt.Fprintf(conn, "GET / HTTP/2.0￥r￥n￥r￥n")
+
+	/*バッファにある返信データをすべて表示*/
+	buff := make([]byte, 2048) //ある程度のサイズ
+	res, err := bufio.NewReader(conn).Read(buff)
+	fmt.Printf("%s", buff[:res])
 
 }
 
