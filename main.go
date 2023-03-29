@@ -1,9 +1,7 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
@@ -31,37 +29,20 @@ func main() {
 		log.Fatal(err)
 	}
 	apiURL := "https://go-codescanning-githubactions-cloudrun-wsgwmfbvhq-uc.a.run.app/"
-	response, err := callAPI(apiURL)
+	response, err := http.Get(apiURL)
+
 	if err != nil {
-		fmt.Println("Error:", err)
+		fmt.Println("Error Request:", err)
 		return
 	}
-	fmt.Println("結果:", response)
+	fmt.Println("接続できた", response)
+
 }
 
 func handler(w http.ResponseWriter, r *http.Request) {
 	name := os.Getenv("NAME")
 	if name == "" {
-		name = "World"
+		name = "BFF"
 	}
 	fmt.Fprintf(w, "Hello %s!\n", name)
-}
-
-func callAPI(url string) (string, error) {
-	resp, err := http.Get(url)
-	if err != nil {
-		return "", err
-	}
-	defer resp.Body.Close()
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return "", err
-	}
-
-	var data ResponseData
-	err = json.Unmarshal(body, &data)
-	if err != nil {
-		return "", err
-	}
-	return data.Message + "接続できた", nil
 }
