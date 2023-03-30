@@ -1,15 +1,14 @@
 name: Deploy
  
 on: 
-  pull_request:
+  push:
     branches:
-      - develop
-    types: [closed]
+      - feature/TRG-1
 env:
   GCP_CREDENTIALS: ${{ secrets.GCP_CREDENTIALS }}
   GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
   IMAGE: gcr.io/${{ secrets.GCP_PROJECT_ID }}/test-image:${{ github.sha }}
-  SERVICE_NAME: go-codescanning-githubactions-cloudrun-bff
+  SERVICE_NAME: go-githubactions-cloudrunbff
   PORT: 80
   GCP_REGION: us-central1
    
