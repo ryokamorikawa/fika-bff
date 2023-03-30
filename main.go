@@ -31,5 +31,11 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		name = "World"
 	}
 	res, _ := http.Get("https://go-codescanning-githubactions-cloudrun-wsgwmfbvhq-uc.a.run.app/")
-	fmt.Fprintf(w, "Hello %s!\n", string(res.StatusCode))
+	fmt.Fprintf(w, "Hello %s!\n", name)
+	fmt.Println(res.StatusCode)             // HTTPレスポンスステータス
+	fmt.Println(res.Proto)                  // HTTPプロトコル
+	fmt.Println(res.Header["Date"])         // データを取得した日付と時間
+	fmt.Println(res.Header["Content-Type"]) // コンテンツのタイプ
+	fmt.Println(res.Request.Method)         // GETかPOST
+	fmt.Println(res.Request.URL)            // URL
 }
