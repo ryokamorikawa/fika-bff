@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"io"
 	"log"
 	"net/http"
 	"os"
@@ -31,11 +32,14 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		name = "BFF"
 	}
 	res, _ := http.Get("https://go-codescanning-githubactions-cloudrun-wsgwmfbvhq-uc.a.run.app/")
-	fmt.Fprintf(w, "Hello %s!\n", res.StatusCode)
-	fmt.Fprintf(w, "Hello %s!\n", res.Request.URL)
-	fmt.Fprintf(w, "Hello %s!\n", res.Proto)
-	fmt.Fprintf(w, "Hello %s!\n", res.Header["Date"])
-	fmt.Fprintf(w, "Hello %s!\n", res.Header["Content-Type"])
-	fmt.Fprintf(w, "Hello %s!\n", res.Request.Method)
-	fmt.Fprintf(w, "Hello %s!\n", res.Proto)
+	// 取得したURLの内容を読み込む
+	body, _ := io.ReadAll(res.Body)
+	// 取得した情報は[]byteなのでstringに型変換
+	fmt.Fprintf(w, "Body %s!\n", string(body))
+	fmt.Fprintf(w, "Status %s!\n", res.StatusCode)
+	fmt.Fprintf(w, "URL %s!\n", res.Request.URL)
+	fmt.Fprintf(w, "Protocol %s!\n", res.Proto)
+	fmt.Fprintf(w, "Date %s!\n", res.Header["Date"])
+	fmt.Fprintf(w, "Content-Type %s!\n", res.Header["Content-Type"])
+	fmt.Fprintf(w, "Method %s!\n", res.Request.Method)
 }
