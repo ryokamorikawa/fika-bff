@@ -28,14 +28,14 @@ func main() {
 func handler(w http.ResponseWriter, r *http.Request) {
 	name := os.Getenv("NAME")
 	if name == "" {
-		name = "World"
+		name = "BFF"
 	}
 	res, _ := http.Get("https://go-codescanning-githubactions-cloudrun-wsgwmfbvhq-uc.a.run.app/")
-	fmt.Fprintf(w, "Hello %s!\n", name)
-	fmt.Println(res.StatusCode)             // HTTPレスポンスステータス
-	fmt.Println(res.Proto)                  // HTTPプロトコル
-	fmt.Println(res.Header["Date"])         // データを取得した日付と時間
-	fmt.Println(res.Header["Content-Type"]) // コンテンツのタイプ
-	fmt.Println(res.Request.Method)         // GETかPOST
-	fmt.Println(res.Request.URL)            // URL
+	fmt.Fprintf(w, "Hello %s!\n", res.StatusCode)
+	fmt.Fprintf(w, "Hello %s!\n", res.Request.URL)
+	fmt.Fprintf(w, "Hello %s!\n", res.Proto)
+	fmt.Fprintf(w, "Hello %s!\n", res.Header["Date"])
+	fmt.Fprintf(w, "Hello %s!\n", res.Header["Content-Type"])
+	fmt.Fprintf(w, "Hello %s!\n", res.Request.Method)
+	fmt.Fprintf(w, "Hello %s!\n", res.Proto)
 }
