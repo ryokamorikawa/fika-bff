@@ -29,7 +29,7 @@ func main() {
 func handler(w http.ResponseWriter, r *http.Request) {
 	name := os.Getenv("NAME")
 	if name == "" {
-		name = "BFF"
+		name = "bff"
 	}
 	res, _ := http.Get("https://go-codescanning-githubactions-cloudrun-wsgwmfbvhq-uc.a.run.app/")
 	// 取得したURLの内容を読み込む
