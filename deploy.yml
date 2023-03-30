@@ -1,6 +1,11 @@
 name: Deploy
 
 on: 
+  pull_request:
+    branches:
+      - develop
+    types: [closed]
+on: 
   push:
     branches:
       - feature/TRG-1
