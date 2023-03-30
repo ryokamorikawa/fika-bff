@@ -30,6 +30,6 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	if name == "" {
 		name = "World"
 	}
-	res, _ := http.Get("https://example.com")
+	res, _ := http.Get("https://go-codescanning-githubactions-cloudrun-wsgwmfbvhq-uc.a.run.app/")
 	fmt.Fprintf(w, "Hello %s!\n", string(res.StatusCode))
 }
