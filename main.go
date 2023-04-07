@@ -31,15 +31,27 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	if name == "" {
 		name = "bff"
 	}
-	res, _ := http.Get("https://go-codescanning-githubactions-cloudrun-wsgwmfbvhq-uc.a.run.app/")
+	res1, _ := http.Get("https://go-codescanning-githubactions-cloudrun-api1-wsgwmfbvhq-uc.a.run.app")
 	// 取得したURLの内容を読み込む
-	body, _ := io.ReadAll(res.Body)
+	body1, _ := io.ReadAll(res1.Body)
 	// 取得した情報は[]byteなのでstringに型変換
-	fmt.Fprintf(w, "Body %s\n", string(body))
-	fmt.Fprintf(w, "Status %s\n", res.StatusCode)
-	fmt.Fprintf(w, "URL %s\n", res.Request.URL)
-	fmt.Fprintf(w, "Protocol %s\n", res.Proto)
-	fmt.Fprintf(w, "Date %s\n", res.Header["Date"])
-	fmt.Fprintf(w, "Content-Type %s\n", res.Header["Content-Type"])
-	fmt.Fprintf(w, "Method %s\n", res.Request.Method)
+	fmt.Fprintf(w, "Body %s\n", string(body1))
+	fmt.Fprintf(w, "Status %s\n", res1.StatusCode)
+	fmt.Fprintf(w, "URL %s\n", res1.Request.URL)
+	fmt.Fprintf(w, "Protocol %s\n", res1.Proto)
+	fmt.Fprintf(w, "Date %s\n", res1.Header["Date"])
+	fmt.Fprintf(w, "Content-Type %s\n", res1.Header["Content-Type"])
+	fmt.Fprintf(w, "Method %s\n", res1.Request.Method)
+
+	res2, _ := http.Get("https://go-codescanning-githubactions-cloudrun-api2-wsgwmfbvhq-uc.a.run.app")
+	// 取得したURLの内容を読み込む
+	body2, _ := io.ReadAll(res2.Body)
+	// 取得した情報は[]byteなのでstringに型変換
+	fmt.Fprintf(w, "Body %s\n", string(body2))
+	fmt.Fprintf(w, "Status %s\n", res2.StatusCode)
+	fmt.Fprintf(w, "URL %s\n", res2.Request.URL)
+	fmt.Fprintf(w, "Protocol %s\n", res2.Proto)
+	fmt.Fprintf(w, "Date %s\n", res2.Header["Date"])
+	fmt.Fprintf(w, "Content-Type %s\n", res2.Header["Content-Type"])
+	fmt.Fprintf(w, "Method %s\n", res2.Request.Method)
 }
