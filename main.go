@@ -49,7 +49,7 @@ func getAlbums(c *gin.Context) {
 	body, _ := io.ReadAll(res.Body)
 	log.Println(string(body))
 
-	c.IndentedJSON(http.StatusOK, string(body))
+	c.JSON(res.StatusCode, string(body))
 }
 
 func getAlbumByID(c *gin.Context) {
@@ -61,9 +61,8 @@ func getAlbumByID(c *gin.Context) {
 	body, _ := io.ReadAll(res.Body)
 	log.Println(string(body))
 
-	c.IndentedJSON(http.StatusOK, string(body))
+	c.JSON(res.StatusCode, string(body))
 }
-
 
 func getUsers(c *gin.Context) {
 	res, _ := http.Get(Api2Url + "/users")
@@ -73,7 +72,7 @@ func getUsers(c *gin.Context) {
 	body, _ := io.ReadAll(res.Body)
 	log.Println(string(body))
 
-	c.IndentedJSON(http.StatusOK, string(body))
+	c.JSON(res.StatusCode, string(body))
 }
 
 func getUserByID(c *gin.Context) {
@@ -85,5 +84,5 @@ func getUserByID(c *gin.Context) {
 	body, _ := io.ReadAll(res.Body)
 	log.Println(string(body))
 
-	c.IndentedJSON(http.StatusOK, string(body))
+	c.JSON(res.StatusCode, string(body))
 }
