@@ -1,7 +1,9 @@
 package main
 
 import (
+	"bytes"
 	"context"
+	"encoding/json"
 	"fmt"
 	"io"
 	"log"
@@ -14,6 +16,7 @@ import (
 
 const Api1Url = "https://cloudrun-api1-morikawa-test-wsgwmfbvhq-uc.a.run.app"
 const Api2Url = "https://cloudrun-api2-morikawa-test-wsgwmfbvhq-uc.a.run.app"
+const WorkflowUrl = "https://workflowexecutions.googleapis.com/v1/projects/kaigofika-poc01/locations/us-central1/workflows/workflow-1-morikawa-test/executions"
 
 func main() {
 	router := gin.Default()
@@ -24,7 +27,9 @@ func main() {
 
 	router.GET("/users", getUsers)
 	router.GET("/users/:id", getUserByID)
-	// router.POST("/users", postUsers)
+	router.POST("/users", postUsers)
+
+	router.POST("/workflow", callWorkFlow)
 
 	port := os.Getenv("PORT")
 	if port == "" {
@@ -33,6 +38,10 @@ func main() {
 	}
 
 	router.Run("0.0.0.0:" + port)
+}
+
+func postUsers(c *gin.Context) {
+	fmt.Println("### postUsers")
 }
 
 func getAlbums(c *gin.Context) {
@@ -142,4 +151,49 @@ func getUserByID(c *gin.Context) {
 
 	c.JSON(resp.StatusCode, string(body))
 
+}
+
+const (
+	method      = "POST"
+	contentType = "application/json"
+)
+
+func callWorkFlow(c *gin.Context) {
+
+	var (
+		body = []byte("{}")
+		buf  = bytes.NewBuffer(body)
+	)
+
+	req, err := http.NewRequest(method, WorkflowUrl, buf)
+	if err != nil {
+		fmt.Printf("http.NewRequest: %v\n", err)
+		c.JSON(http.StatusInternalServerError, err)
+		return
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	ctx := context.Background()
+
+	client, err := idtoken.NewClient(ctx, WorkflowUrl)
+	if err != nil {
+		fmt.Printf("idtoken.NewClient: %v\n", err)
+		c.JSON(http.StatusInternalServerError, err)
+		return
+	}
+
+	resp, err := client.Do(req)
+	if err != nil {
+		fmt.Printf("client.Get: %v\n", err)
+		c.JSON(http.StatusInternalServerError, err)
+		return
+	}
+	defer resp.Body.Close()
+
+	// 取得したURLの内容を読み込む
+	decoder := json.NewDecoder(resp.Body)
+	log.Println(decoder)
+
+	c.JSON(resp.StatusCode, decoder)
 }
