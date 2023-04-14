@@ -1,15 +1,15 @@
 package main
 
 import (
-	"bytes"
 	"context"
-	"encoding/json"
 	"fmt"
 	"io"
 	"log"
 	"net/http"
 	"os"
 
+	executions "cloud.google.com/go/workflows/executions/apiv1"
+	"cloud.google.com/go/workflows/executions/apiv1/executionspb"
 	"github.com/gin-gonic/gin"
 	"google.golang.org/api/idtoken"
 )
@@ -17,6 +17,8 @@ import (
 const Api1Url = "https://cloudrun-api1-morikawa-test-wsgwmfbvhq-uc.a.run.app"
 const Api2Url = "https://cloudrun-api2-morikawa-test-wsgwmfbvhq-uc.a.run.app"
 const WorkflowUrl = "https://workflowexecutions.googleapis.com/v1/projects/kaigofika-poc01/locations/us-central1/workflows/workflow-1-morikawa-test/executions"
+const ProjectId = "kaigofika-poc01"
+const Location = "us-central1"
 
 func main() {
 	router := gin.Default()
@@ -29,7 +31,7 @@ func main() {
 	router.GET("/users/:id", getUserByID)
 	router.POST("/users", postUsers)
 
-	router.POST("/workflow", callWorkFlow)
+	router.POST("/workflow", executeWorkFlow)
 
 	port := os.Getenv("PORT")
 	if port == "" {
@@ -158,42 +160,37 @@ const (
 	contentType = "application/json"
 )
 
-func callWorkFlow(c *gin.Context) {
-
-	var (
-		body = []byte("{}")
-		buf  = bytes.NewBuffer(body)
-	)
-
-	req, err := http.NewRequest(method, WorkflowUrl, buf)
-	if err != nil {
-		fmt.Printf("http.NewRequest: %v\n", err)
-		c.JSON(http.StatusInternalServerError, err)
-		return
-	}
-
-	req.Header.Add("Content-Type", contentType)
+func executeWorkFlow(c *gin.Context) {
 
 	ctx := context.Background()
-
-	client, err := idtoken.NewClient(ctx, WorkflowUrl)
+	// This snippet has been automatically generated and should be regarded as a code template only.
+	// It will require modifications to work:
+	// - It may require correct/in-range values for request initialization.
+	// - It may require specifying regional endpoints when creating the service client as shown in:
+	//   https://pkg.go.dev/cloud.google.com/go#hdr-Client_Options
+	client, err := executions.NewClient(ctx)
 	if err != nil {
-		fmt.Printf("idtoken.NewClient: %v\n", err)
+		// TODO: Handle error.
+		fmt.Printf("executions.NewClient: %v\n", err)
+		c.JSON(http.StatusInternalServerError, err)
+		return
+	}
+	defer client.Close()
+
+	req := &executionspb.CreateExecutionRequest{
+		// TODO: Fill request struct fields.
+		// See https://pkg.go.dev/cloud.google.com/go/workflows/executions/apiv1beta/executionspb#CreateExecutionRequest.
+		Parent: "projects/" + ProjectId + "/locations/" + Location + "/workflows/" + "workflow-1-morikawa-test",
+	}
+	resp, err := client.CreateExecution(ctx, req)
+	if err != nil {
+		// TODO: Handle error.
+		fmt.Printf("client.CreateExecution: %v\n", err)
 		c.JSON(http.StatusInternalServerError, err)
 		return
 	}
 
-	resp, err := client.Do(req)
-	if err != nil {
-		fmt.Printf("client.Get: %v\n", err)
-		c.JSON(http.StatusInternalServerError, err)
-		return
-	}
-	defer resp.Body.Close()
+	log.Println(resp)
 
-	// 取得したURLの内容を読み込む
-	decoder := json.NewDecoder(resp.Body)
-	log.Println(decoder)
-
-	c.JSON(resp.StatusCode, decoder)
+	c.JSON(http.StatusOK, resp)
 }
